@@ -10,6 +10,7 @@
             --lotte-red: #E60012;
             --bg-gray: #F8F8F8;
             --text-dark: #333;
+            --text-gray: #777;
             --border-color: #DDD;
         }
 
@@ -44,21 +45,47 @@
             background-color: white;
         }
 
-        /* 로고 헤더 영역 */
+        /* 로고 헤더 */
         .header {
-            padding: 40px; /* 상하좌우 여백 */
-            border-bottom: 4px solid var(--lotte-red);
+            padding: 40px;
+            border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* 왼쪽 정렬 (가운데는 center) */
         }
 
-        /* ★ 로고 이미지 사이즈 조절 CSS ★ */
         .logo-img {
-            width: 250px;        /* 로고 가로 너비 (원하는 크기로 수정하세요) */
-            height: auto;        /* 세로 비율 유지 */
-            max-height: 80px;    /* 최대 높이 제한 (헤더를 넘어가지 않게) */
+            width: 250px;
+            height: auto;
             object-fit: contain;
+        }
+
+        /* ★ 추가: 안내 문구 영역 ★ */
+        .guide-box {
+            background-color: #f9f9f9;
+            padding: 15px 40px;
+            border-bottom: 4px solid var(--lotte-red);
+        }
+
+        .guide-text {
+            font-size: 0.95rem;
+            color: var(--lotte-red);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 깜빡이는 애니메이션 효과 */
+        .guide-text::before {
+            content: '●';
+            font-size: 0.7rem;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
         }
 
         .course-list {
@@ -79,7 +106,7 @@
             color: white;
         }
 
-        .course-item h3 { font-size: 1.2rem; margin-bottom: 5px; }
+        .course-item h3 { font-size: 1.2rem; margin-bottom: 5px; word-break: keep-all; }
         .course-item p { font-size: 0.9rem; opacity: 0.8; }
 
         /* 오른쪽 상세 정보 섹션 */
@@ -90,7 +117,6 @@
             flex-direction: column;
             justify-content: center;
             background-color: var(--bg-gray);
-            position: relative;
         }
 
         .details-card {
@@ -98,6 +124,10 @@
             padding: 50px;
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .label {
@@ -108,10 +138,10 @@
             display: block;
         }
 
-        .val-title { font-size: 3rem; font-weight: 800; margin-bottom: 40px; line-height: 1.2; }
-        .info-grid { display: flex; gap: 40px; margin-bottom: 40px; }
-        .info-box h4 { font-size: 1rem; color: #777; margin-bottom: 10px; }
-        .info-box p { font-size: 1.8rem; font-weight: 700; }
+        .val-title { font-size: 3.2rem; font-weight: 800; margin-bottom: 40px; line-height: 1.2; word-break: keep-all; }
+        .info-grid { display: flex; gap: 60px; margin-bottom: 40px; }
+        .info-box h4 { font-size: 1.1rem; color: #777; margin-bottom: 10px; }
+        .info-box p { font-size: 2rem; font-weight: 700; }
 
         .direction-area {
             text-align: center;
@@ -121,9 +151,9 @@
         }
 
         .arrow {
-            font-size: 8rem;
+            font-size: 9rem;
             color: var(--lotte-red);
-            display: inline-block;
+            line-height: 1;
         }
 
         @keyframes fadeIn {
@@ -139,42 +169,55 @@
 <div id="dashboard">
     <!-- 왼쪽 목록 -->
     <aside class="sidebar">
-        <!-- 로고 영역 -->
         <div class="header">
-            <!-- 롯데 로고 이미지를 넣으세요. src에 이미지 경로 입력 -->
-            <img src="logo.png" alt="LOTTE Logo" class="logo-img">
+            <img src="logo.png" alt="LOTTE" class="logo-img">
         </div>
+        
+        <!-- 안내 문구 영역 -->
+        <div class="guide-box">
+            <div class="guide-text">과정명을 선택하면 정보를 확인할 수 있습니다.</div>
+        </div>
+
         <div class="course-list" id="courseList">
-            <div style="padding: 40px;">데이터를 불러오는 중...</div>
+            <div style="padding: 40px; color: #999;">데이터를 불러오는 중...</div>
         </div>
     </aside>
 
     <!-- 오른쪽 상세 -->
     <main class="main-content" id="mainContent">
         <div class="details-card" id="detailsCard">
-            <span class="label">Education Course</span>
-            <h2 class="val-title" id="det-title">강의를 선택해주세요</h2>
-            
-            <div class="info-grid">
-                <div class="info-box">
-                    <h4>교육기간</h4>
-                    <p id="det-period">-</p>
-                </div>
-                <div class="info-box">
-                    <h4>강의실</h4>
-                    <p id="det-room">-</p>
-                </div>
+            <div id="empty-state">
+                <span class="label">Information</span>
+                <h2 class="val-title" style="color: #ccc;">강의를 선택해 주세요</h2>
+                <p style="color: #999; font-size: 1.2rem;">왼쪽 목록에서 안내받으실 과정명을 클릭하세요.</p>
             </div>
 
-            <div class="direction-area">
-                <div class="arrow" id="det-arrow">→</div>
-                <p style="font-weight: 700; color: #555; margin-top: 10px;">이동 방향</p>
+            <div id="detail-content" style="display: none;">
+                <span class="label">Education Course</span>
+                <h2 class="val-title" id="det-title">-</h2>
+                
+                <div class="info-grid">
+                    <div class="info-box">
+                        <h4>교육기간</h4>
+                        <p id="det-period">-</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>강의실</h4>
+                        <p id="det-room">-</p>
+                    </div>
+                </div>
+
+                <div class="direction-area">
+                    <div class="arrow" id="det-arrow">→</div>
+                    <p style="font-weight: 700; color: #555; margin-top: 10px;">이동 방향</p>
+                </div>
             </div>
         </div>
     </main>
 </div>
 
 <script>
+    // 구글 시트 CSV URL을 여기에 입력하세요
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv';
 
     let courses = [];
@@ -196,10 +239,11 @@
             }).filter(item => item.title);
 
             renderList();
-            if(courses.length > 0) showDetails(0);
+            // 첫 로딩 시 안내를 위해 자동 선택은 하지 않거나, 첫 번째를 보여주려면 아래 주석 해제
+            // if(courses.length > 0) showDetails(0); 
         } catch (error) {
             console.error('데이터 로드 실패:', error);
-            document.getElementById('courseList').innerHTML = '<div style="padding:40px;">데이터 로드 실패</div>';
+            document.getElementById('courseList').innerHTML = '<div style="padding:40px;">데이터를 불러올 수 없습니다.</div>';
         }
     }
 
@@ -215,15 +259,23 @@
 
     function showDetails(index) {
         const data = courses[index];
+        
+        // UI 전환: 안내 문구 숨기고 상세 내용 표시
+        document.getElementById('empty-state').style.display = 'none';
+        document.getElementById('detail-content').style.display = 'block';
+
+        // 액티브 상태 변경
         document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
         const activeItem = document.getElementById(`item-${index}`);
         if(activeItem) activeItem.classList.add('active');
 
+        // 애니메이션 효과
         const card = document.getElementById('detailsCard');
         card.classList.remove('animate');
         void card.offsetWidth;
         card.classList.add('animate');
 
+        // 데이터 반영
         document.getElementById('det-title').innerText = data.title;
         document.getElementById('det-period').innerText = data.period;
         document.getElementById('det-room').innerText = data.room;
@@ -231,7 +283,7 @@
     }
 
     fetchSheetData();
-    setInterval(fetchSheetData, 60000); 
+    setInterval(fetchSheetData, 60000); // 1분마다 업데이트
 </script>
 
 </body>
