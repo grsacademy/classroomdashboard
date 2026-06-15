@@ -8,16 +8,15 @@
     <style>
         :root {
             --lotte-red: #E60012;
-            --bg-gray: #F8F8F8;
+            --bg-gray: #F1F1F1;
             --text-dark: #333;
-            --text-gray: #777;
             --border-color: #DDD;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
 
         body {
-            background-color: #333;
+            background-color: #222;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -36,191 +35,172 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* 왼쪽 리스트 섹션 */
+        /* 왼쪽 사이드바 (로고 및 안내) */
         .sidebar {
-            width: 35%;
+            width: 25%;
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             background-color: white;
         }
 
-        /* 로고 헤더 */
         .header {
             padding: 40px;
             border-bottom: 1px solid #eee;
             display: flex;
-            align-items: center;
+            justify-content: center;
         }
 
+        /* 로고 사이즈 조절 */
         .logo-img {
-            width: 250px;
+            width: 100%;
+            max-width: 250px;
             height: auto;
             object-fit: contain;
         }
 
-        /* ★ 추가: 안내 문구 영역 ★ */
         .guide-box {
-            background-color: #f9f9f9;
-            padding: 15px 40px;
-            border-bottom: 4px solid var(--lotte-red);
+            padding: 40px 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .guide-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--lotte-red);
+            margin-bottom: 20px;
+            line-height: 1.4;
         }
 
         .guide-text {
-            font-size: 0.95rem;
-            color: var(--lotte-red);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+            word-break: keep-all;
         }
 
-        /* 깜빡이는 애니메이션 효과 */
-        .guide-text::before {
-            content: '●';
-            font-size: 0.7rem;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        .course-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .course-item {
-            padding: 25px 40px;
-            border-bottom: 1px solid #EEE;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .course-item:hover { background-color: #FFF5F5; }
-        .course-item.active {
-            background-color: var(--lotte-red);
-            color: white;
-        }
-
-        .course-item h3 { font-size: 1.2rem; margin-bottom: 5px; word-break: keep-all; }
-        .course-item p { font-size: 0.9rem; opacity: 0.8; }
-
-        /* 오른쪽 상세 정보 섹션 */
+        /* 오른쪽 메인 영역 (그리드 레이아웃) */
         .main-content {
-            width: 65%;
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            width: 75%;
+            padding: 30px;
             background-color: var(--bg-gray);
+            display: grid;
+            gap: 25px;
+            /* 기본 2열 구성 */
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
         }
 
-        .details-card {
+        /* 데이터 개수에 따른 그리드 변형 */
+        .count-1 { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+        .count-2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; }
+        .count-3 .course-card:last-child { grid-column: span 2; } /* 3개일 때 마지막 카드가 하단 전체 차지 */
+
+        /* 교육 과정 카드 스타일 */
+        .course-card {
             background: white;
-            padding: 50px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            min-height: 500px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
+            border-top: 8px solid var(--lotte-red);
+            transition: transform 0.3s ease;
+            animation: fadeIn 0.6s ease-out forwards;
         }
 
-        .label {
+        .card-top .label {
             color: var(--lotte-red);
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-bottom: 10px;
             display: block;
         }
 
-        .val-title { font-size: 3.2rem; font-weight: 800; margin-bottom: 40px; line-height: 1.2; word-break: keep-all; }
-        .info-grid { display: flex; gap: 60px; margin-bottom: 40px; }
-        .info-box h4 { font-size: 1.1rem; color: #777; margin-bottom: 10px; }
-        .info-box p { font-size: 2rem; font-weight: 700; }
+        .card-top h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.2;
+            word-break: keep-all;
+        }
 
-        .direction-area {
-            text-align: center;
+        .card-info {
             margin-top: 20px;
-            padding-top: 40px;
-            border-top: 1px dashed var(--border-color);
+            display: flex;
+            gap: 30px;
+        }
+
+        .info-item h4 { font-size: 0.9rem; color: #888; margin-bottom: 5px; }
+        .info-item p { font-size: 1.3rem; font-weight: 700; color: #333; }
+
+        .card-bottom {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed #DDD;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .arrow {
-            font-size: 9rem;
+            font-size: 5rem;
             color: var(--lotte-red);
+            font-weight: bold;
             line-height: 1;
+        }
+
+        .room-tag {
+            background-color: var(--lotte-red);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate { animation: fadeIn 0.5s ease-out; }
 
+        /* 텍스트가 너무 많을 때 스케일 조정 */
+        .count-1 .card-top h2 { font-size: 4rem; }
+        .count-1 .arrow { font-size: 10rem; }
     </style>
 </head>
 <body>
 
 <div id="dashboard">
-    <!-- 왼쪽 목록 -->
+    <!-- 왼쪽 사이드바 -->
     <aside class="sidebar">
         <div class="header">
             <img src="logo.png" alt="LOTTE" class="logo-img">
         </div>
-        
-        <!-- 안내 문구 영역 -->
         <div class="guide-box">
-            <div class="guide-text">과정명을 선택하면 정보를 확인할 수 있습니다.</div>
-        </div>
-
-        <div class="course-list" id="courseList">
-            <div style="padding: 40px; color: #999;">데이터를 불러오는 중...</div>
+            <div class="guide-title">오늘의 교육 과정</div>
+            <div class="guide-text">
+                롯데 아카데미를 방문해주셔서 감사합니다.<br>
+                우측 영역에서 과정명과 강의실 위치를 확인해 주세요.
+            </div>
         </div>
     </aside>
 
-    <!-- 오른쪽 상세 -->
-    <main class="main-content" id="mainContent">
-        <div class="details-card" id="detailsCard">
-            <div id="empty-state">
-                <span class="label">Information</span>
-                <h2 class="val-title" style="color: #ccc;">강의를 선택해 주세요</h2>
-                <p style="color: #999; font-size: 1.2rem;">왼쪽 목록에서 안내받으실 과정명을 클릭하세요.</p>
-            </div>
-
-            <div id="detail-content" style="display: none;">
-                <span class="label">Education Course</span>
-                <h2 class="val-title" id="det-title">-</h2>
-                
-                <div class="info-grid">
-                    <div class="info-box">
-                        <h4>교육기간</h4>
-                        <p id="det-period">-</p>
-                    </div>
-                    <div class="info-box">
-                        <h4>강의실</h4>
-                        <p id="det-room">-</p>
-                    </div>
-                </div>
-
-                <div class="direction-area">
-                    <div class="arrow" id="det-arrow">→</div>
-                    <p style="font-weight: 700; color: #555; margin-top: 10px;">이동 방향</p>
-                </div>
-            </div>
-        </div>
+    <!-- 오른쪽 과정 리스트 영역 -->
+    <main class="main-content" id="courseContainer">
+        <!-- JS로 카드가 생성됩니다 -->
     </main>
 </div>
 
 <script>
-    // 구글 시트 CSV URL을 여기에 입력하세요
+    // 1. 구글 시트 CSV URL 입력
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv';
 
-    let courses = [];
     const arrowMap = { 'left': '←', 'right': '→', 'up': '↑', 'straight': '↑', 'down': '↓' };
 
     async function fetchSheetData() {
@@ -228,7 +208,9 @@
             const response = await fetch(SHEET_URL);
             const data = await response.text();
             const rows = data.split('\n').slice(1);
-            courses = rows.map(row => {
+            
+            // 최대 4개까지만 가져오기
+            const courses = rows.map(row => {
                 const cols = row.split(',');
                 return {
                     title: cols[0],
@@ -236,54 +218,49 @@
                     room: cols[2],
                     direction: cols[3]?.trim().toLowerCase()
                 };
-            }).filter(item => item.title);
+            }).filter(item => item.title).slice(0, 4);
 
-            renderList();
-            // 첫 로딩 시 안내를 위해 자동 선택은 하지 않거나, 첫 번째를 보여주려면 아래 주석 해제
-            // if(courses.length > 0) showDetails(0); 
+            renderDashboard(courses);
         } catch (error) {
             console.error('데이터 로드 실패:', error);
-            document.getElementById('courseList').innerHTML = '<div style="padding:40px;">데이터를 불러올 수 없습니다.</div>';
+            document.getElementById('courseContainer').innerHTML = '데이터를 불러오는 중 오류가 발생했습니다.';
         }
     }
 
-    function renderList() {
-        const listEl = document.getElementById('courseList');
-        listEl.innerHTML = courses.map((course, index) => `
-            <div class="course-item" onclick="showDetails(${index})" id="item-${index}">
-                <h3>${course.title}</h3>
-                <p>${course.room}</p>
+    function renderDashboard(courses) {
+        const container = document.getElementById('courseContainer');
+        
+        // 개수에 따른 클래스 부여 (레이아웃 조절)
+        container.className = `main-content count-${courses.length}`;
+        
+        if (courses.length === 0) {
+            container.innerHTML = '<div style="grid-column: span 2; text-align:center; font-size:2rem; color:#999; align-self:center;">진행 중인 교육 과정이 없습니다.</div>';
+            return;
+        }
+
+        container.innerHTML = courses.map((course, index) => `
+            <div class="course-card" style="animation-delay: ${index * 0.1}s">
+                <div class="card-top">
+                    <span class="label">EDUCATION COURSE</span>
+                    <h2>${course.title}</h2>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <h4>교육 기간</h4>
+                            <p>${course.period}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-bottom">
+                    <div class="room-tag">${course.room}</div>
+                    <div class="arrow">${arrowMap[course.direction] || '→'}</div>
+                </div>
             </div>
         `).join('');
     }
 
-    function showDetails(index) {
-        const data = courses[index];
-        
-        // UI 전환: 안내 문구 숨기고 상세 내용 표시
-        document.getElementById('empty-state').style.display = 'none';
-        document.getElementById('detail-content').style.display = 'block';
-
-        // 액티브 상태 변경
-        document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
-        const activeItem = document.getElementById(`item-${index}`);
-        if(activeItem) activeItem.classList.add('active');
-
-        // 애니메이션 효과
-        const card = document.getElementById('detailsCard');
-        card.classList.remove('animate');
-        void card.offsetWidth;
-        card.classList.add('animate');
-
-        // 데이터 반영
-        document.getElementById('det-title').innerText = data.title;
-        document.getElementById('det-period').innerText = data.period;
-        document.getElementById('det-room').innerText = data.room;
-        document.getElementById('det-arrow').innerText = arrowMap[data.direction] || '→';
-    }
-
+    // 초기 실행 및 1분마다 업데이트
     fetchSheetData();
-    setInterval(fetchSheetData, 60000); // 1분마다 업데이트
+    setInterval(fetchSheetData, 60000);
 </script>
 
 </body>
