@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>강의장 안내 대시보드</title>
+    <!-- Noto Sans KR 폰트 적용 (롯데 스타일과 유사) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* GRS 스타일 기반 디자인 */
         :root {
-            --bg-dark: #0f172a;       /* 매우 어두운 남색 배경 */
-            --card-bg: #1e293b;      /* 카드 배경 */
-            --point-color: #fbbf24;   /* 포인트 노란색 (GRS 스타일) */
-            --text-main: #ffffff;
-            --text-sub: #94a3b8;
+            --lotte-red: #E30613;
+            --bg-gray: #f8f8f8;
+            --text-dark: #222;
+            --border-color: #eee;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #333; /* 배경 어둡게 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -26,184 +26,186 @@
             overflow: hidden;
         }
 
-        /* 16:9 비율 유지 컨테이너 */
-        .dashboard {
+        /* 16:9 컨테이너 */
+        .dashboard-container {
             width: 100vw;
-            height: 56.25vw; 
+            height: 56.25vw; /* 16:9 비율 */
             max-height: 100vh;
-            max-width: 177.78vh;
+            max-width: 177.78vh; /* 16:9 비율 */
+            background-color: white;
+            position: relative;
             display: flex;
             flex-direction: column;
-            padding: 2% 4%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* 헤더 섹션 */
+        /* 헤더 디자인 (롯데 공식홈페이지 느낌) */
         header {
+            padding: 2% 4%;
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 30px;
-            border-bottom: 4px solid var(--point-color);
-            padding-bottom: 15px;
+            align-items: center;
+            border-bottom: 2px solid var(--lotte-red);
         }
 
-        .logo-area { font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; color: var(--point-color); }
-        .time-area { text-align: right; font-size: 1.8rem; font-weight: 500; color: #fff; }
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--lotte-red);
+            letter-spacing: -1px;
+        }
 
-        /* 리스트 영역 */
-        .content-list {
+        .current-time {
+            font-size: 1.5rem;
+            color: #666;
+        }
+
+        /* 메인 콘텐츠 리스트 */
+        main {
             flex: 1;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
+            padding: 2% 4%;
+            overflow-y: auto;
         }
 
-        /* 개별 항목 (행) */
-        .row {
-            display: flex;
-            align-items: center;
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px 40px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        /* 왼쪽: 과정명 및 기간 */
-        .left-box {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .course-title { font-size: 2.8rem; font-weight: 700; color: #fff; line-height: 1.2; }
-        .course-period { font-size: 1.5rem; color: var(--text-sub); }
-
-        /* 오른쪽: 강의실 및 방향 */
-        .right-box {
-            flex: 1;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 50px;
+        thead th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 1.2rem;
+            color: #888;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 400;
         }
 
-        .room-tag {
-            font-size: 4rem;
-            font-weight: 800;
-            color: var(--point-color);
-            min-width: 180px;
-            text-align: right;
+        tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s;
         }
 
-        /* 화살표 스타일 */
-        .arrow-icon {
-            width: 100px;
-            height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        tbody td {
+            padding: 2rem 1rem;
+            font-size: 1.8rem;
+            color: var(--text-dark);
         }
 
-        .arrow-icon svg {
-            width: 80px;
-            height: 80px;
-            fill: var(--point-color);
+        .course-name { font-weight: 700; width: 40%; }
+        .course-date { font-size: 1.3rem; color: #666; width: 25%; }
+        .room-number { font-weight: 700; color: var(--lotte-red); width: 20%; text-align: center; }
+        .direction { width: 15%; text-align: right; font-size: 2.5rem; }
+
+        /* 화살표 애니메이션 */
+        .arrow {
+            display: inline-block;
+            color: var(--lotte-red);
         }
 
-        /* 데이터 없을 때 메시지 */
-        .loading { text-align: center; font-size: 2rem; margin-top: 100px; color: var(--text-sub); }
-
+        /* 푸터 */
+        footer {
+            padding: 1.5% 4%;
+            background: var(--bg-gray);
+            font-size: 1rem;
+            color: #999;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-<div class="dashboard">
-    <header>
-        <div class="logo-area">GRS ACADEMY <span style="font-size: 1.5rem; color: #fff;">강의장 안내</span></div>
-        <div class="time-area" id="clock">2026-06-15 14:33:00</div>
-    </header>
+    <div class="dashboard-container">
+        <header>
+            <div class="logo">Lotte <span style="color:#222; font-weight:300;">Academy</span></div>
+            <div class="current-time" id="clock">2026-06-15 14:39</div>
+        </header>
 
-    <div class="content-list" id="sheet-data-list">
-        <div class="loading">데이터를 실시간으로 불러오는 중...</div>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th>과정명</th>
+                        <th>교육기간</th>
+                        <th style="text-align: center;">강의실</th>
+                        <th style="text-align: right;">이동방향</th>
+                    </tr>
+                </thead>
+                <tbody id="course-list">
+                    <!-- 데이터가 여기에 삽입됩니다 -->
+                </tbody>
+            </table>
+        </main>
+
+        <footer>
+            본 화면은 실시간 교육 일정에 따라 자동으로 업데이트됩니다.
+        </footer>
     </div>
-</div>
 
-<script>
-    // 1. 본인의 구글 시트 CSV URL을 여기에 입력하세요
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv%27';
+    <script>
+        // 구글 시트 웹 게시(CSV) URL을 여기에 붙여넣으세요
+        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv%27';
 
-    // 2. 화살표 SVG 코드 (왼쪽/오른쪽 전용)
-    const icons = {
-        left: `<svg viewBox="0 0 24 24"><path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" /></svg>`,
-        right: `<svg viewBox="0 0 24 24"><path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" /></svg>`
-    };
+        // 현재 시간 설정 (요청하신 기준 시간: 2026-06-15 14:39)
+        const TODAY = new Date('2026-06-15');
 
-    // 3. 시간 업데이트
-    function updateClock() {
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
-        const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        document.getElementById('clock').innerText = `${dateStr} ${timeStr}`;
-    }
+        async function fetchSheetData() {
+            try {
+                const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                const data = await response.text();
+                const rows = data.split('\n').slice(1); // 헤더 제외
 
-    // 4. 데이터 로드 및 렌더링
-    async function loadData() {
-        try {
-            const response = await fetch(CSV_URL);
-            const data = await response.text();
-            
-            // CSV 파싱 (줄바꿈 처리)
-            const rows = data.split(/\r?\n/).slice(1); 
-            const listContainer = document.getElementById('sheet-data-list');
-            listContainer.innerHTML = '';
+                const listContainer = document.getElementById('course-list');
+                listContainer.innerHTML = '';
 
-            rows.forEach(row => {
-                // 쉼표로 구분하되 큰따옴표 안의 쉼표는 무시하는 정규식 (복잡한 과정명 대비)
-                const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                
-                if (cols && cols.length >= 3) {
-                    const title = cols[0].replace(/"/g, "");
-                    const period = cols[1].replace(/"/g, "");
-                    const room = cols[2].replace(/"/g, "");
-                    const directionRaw = cols[3] ? cols[3].replace(/"/g, "").trim() : "";
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if(columns.length < 5) return;
 
-                    // 방향 판단 (왼쪽/left 면 왼쪽 아이콘, 그 외는 오른쪽)
-                    let arrowSvg = "";
-                    if (directionRaw.includes("왼쪽") || directionRaw.toLowerCase().includes("left")) {
-                        arrowSvg = icons.left;
-                    } else if (directionRaw.includes("오른쪽") || directionRaw.toLowerCase().includes("right")) {
-                        arrowSvg = icons.right;
+                    const [title, start, end, room, direction] = columns.map(item => item.trim());
+
+                    // 날짜 필터링 (현재 날짜가 시작일과 종료일 사이인 경우만 표시)
+                    const startDate = new Date(start);
+                    const endDate = new Date(end);
+
+                    if (TODAY >= startDate && TODAY <= endDate) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td class="course-name">${title}</td>
+                            <td class="course-date">${start} ~ ${end}</td>
+                            <td class="room-number">${room}호</td>
+                            <td class="direction"><span class="arrow">${getArrow(direction)}</span></td>
+                        `;
+                        listContainer.appendChild(tr);
                     }
-
-                    const rowHtml = `
-                        <div class="row">
-                            <div class="left-box">
-                                <div class="course-title">${title}</div>
-                                <div class="course-period">${period}</div>
-                            </div>
-                            <div class="right-box">
-                                <div class="room-tag">${room}</div>
-                                <div class="arrow-icon">${arrowSvg}</div>
-                            </div>
-                        </div>
-                    `;
-                    listContainer.innerHTML += rowHtml;
-                }
-            });
-        } catch (e) {
-            console.error("데이터 로딩 에러:", e);
+                });
+            } catch (error) {
+                console.error('데이터를 불러오는데 실패했습니다.', error);
+            }
         }
-    }
 
-    // 실행
-    setInterval(updateClock, 1000);
-    updateClock();
-    
-    loadData();
-    setInterval(loadData, 30000); // 30초마다 데이터 갱신
-</script>
+        // 방향 텍스트를 화살표 아이콘으로 변환
+        function getArrow(dir) {
+            if (dir.includes('왼쪽')) return '←';
+            if (dir.includes('오른쪽')) return '→';
+            if (dir.includes('위')) return '↑';
+            if (dir.includes('아래')) return '↓';
+            if (dir.includes('11시')) return '↖';
+            if (dir.includes('1시')) return '↗';
+            return '→'; // 기본값
+        }
 
+        // 시계 업데이트
+        function updateClock() {
+            const now = new Date(); // 실제 구동 시에는 현재 시간을 사용
+            // 여기서는 요청하신 기준 시간을 출력하도록 고정하거나 조정 가능
+            document.getElementById('clock').innerText = `2026-06-15 14:39`;
+        }
+
+        // 초기 실행 및 주기적 업데이트 (5분마다)
+        fetchSheetData();
+        setInterval(fetchSheetData, 300000); 
+        updateClock();
+    </script>
 </body>
 </html>
