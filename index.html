@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>강의장 안내 대시보드</title>
-    <!-- Noto Sans KR 폰트 적용 (롯데 스타일과 유사) -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>강의실 안내 대시보드</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
         :root {
-            --lotte-red: #E30613;
-            --bg-gray: #f8f8f8;
-            --text-dark: #222;
-            --border-color: #eee;
+            --lotte-red: #E60012;
+            --bg-gray: #F8F8F8;
+            --text-dark: #333;
+            --border-color: #DDD;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
 
         body {
-            font-family: 'Noto Sans KR', sans-serif;
             background-color: #333; /* 배경 어둡게 */
             display: flex;
             justify-content: center;
@@ -27,185 +25,229 @@
         }
 
         /* 16:9 컨테이너 */
-        .dashboard-container {
+        #dashboard {
             width: 100vw;
-            height: 56.25vw; /* 16:9 비율 */
+            height: 56.25vw; /* 16:9 ratio */
             max-height: 100vh;
-            max-width: 177.78vh; /* 16:9 비율 */
+            max-width: 177.78vh; /* 16:9 ratio */
             background-color: white;
-            position: relative;
             display: flex;
-            flex-direction: column;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
-        /* 헤더 디자인 (롯데 공식홈페이지 느낌) */
-        header {
-            padding: 2% 4%;
+        /* 왼쪽 리스트 섹션 */
+        .sidebar {
+            width: 35%;
+            border-right: 1px solid var(--border-color);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--lotte-red);
+            flex-direction: column;
+            background-color: white;
         }
 
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 700;
+        .header {
+            padding: 40px;
+            border-bottom: 4px solid var(--lotte-red);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
             color: var(--lotte-red);
+            font-weight: 800;
             letter-spacing: -1px;
         }
 
-        .current-time {
-            font-size: 1.5rem;
-            color: #666;
-        }
-
-        /* 메인 콘텐츠 리스트 */
-        main {
+        .course-list {
             flex: 1;
-            padding: 2% 4%;
             overflow-y: auto;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .course-item {
+            padding: 25px 40px;
+            border-bottom: 1px solid #EEE;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        thead th {
-            text-align: left;
-            padding: 1rem;
-            font-size: 1.2rem;
-            color: #888;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 400;
+        .course-item:hover { background-color: #FFF5F5; }
+        .course-item.active {
+            background-color: var(--lotte-red);
+            color: white;
         }
 
-        tbody tr {
-            border-bottom: 1px solid var(--border-color);
-            transition: background 0.3s;
+        .course-item h3 { font-size: 1.2rem; margin-bottom: 5px; }
+        .course-item p { font-size: 0.9rem; opacity: 0.8; }
+
+        /* 오른쪽 상세 정보 섹션 */
+        .main-content {
+            width: 65%;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: var(--bg-gray);
+            position: relative;
         }
 
-        tbody td {
-            padding: 2rem 1rem;
-            font-size: 1.8rem;
-            color: var(--text-dark);
+        .details-card {
+            background: white;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        .course-name { font-weight: 700; width: 40%; }
-        .course-date { font-size: 1.3rem; color: #666; width: 25%; }
-        .room-number { font-weight: 700; color: var(--lotte-red); width: 20%; text-align: center; }
-        .direction { width: 15%; text-align: right; font-size: 2.5rem; }
-
-        /* 화살표 애니메이션 */
-        .arrow {
-            display: inline-block;
+        .label {
             color: var(--lotte-red);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: block;
         }
 
-        /* 푸터 */
-        footer {
-            padding: 1.5% 4%;
-            background: var(--bg-gray);
-            font-size: 1rem;
-            color: #999;
+        .val-title { font-size: 3rem; font-weight: 800; margin-bottom: 40px; line-height: 1.2; }
+        .info-grid { display: flex; gap: 40px; margin-bottom: 40px; }
+        .info-box h4 { font-size: 1rem; color: #777; margin-bottom: 10px; }
+        .info-box p { font-size: 1.8rem; font-weight: 700; }
+
+        /* 방향 아이콘 (화살표) */
+        .direction-area {
             text-align: center;
+            margin-top: 20px;
+            padding-top: 40px;
+            border-top: 1px dashed var(--border-color);
         }
+
+        .arrow {
+            font-size: 8rem;
+            color: var(--lotte-red);
+            display: inline-block;
+            transition: transform 0.5s;
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate { animation: fadeIn 0.5s ease-out; }
+
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <header>
-            <div class="logo">Lotte <span style="color:#222; font-weight:300;">Academy</span></div>
-            <div class="current-time" id="clock">2026-06-15 14:39</div>
-        </header>
+<div id="dashboard">
+    <!-- 왼쪽 목록 -->
+    <aside class="sidebar">
+        <div class="header">
+            <h1>LOTTE<br>ACADEMY</h1>
+        </div>
+        <div class="course-list" id="courseList">
+            <!-- 데이터가 여기 로드됩니다 -->
+            <div style="padding: 40px;">데이터를 불러오는 중...</div>
+        </div>
+    </aside>
 
-        <main>
-            <table>
-                <thead>
-                    <tr>
-                        <th>과정명</th>
-                        <th>교육기간</th>
-                        <th style="text-align: center;">강의실</th>
-                        <th style="text-align: right;">이동방향</th>
-                    </tr>
-                </thead>
-                <tbody id="course-list">
-                    <!-- 데이터가 여기에 삽입됩니다 -->
-                </tbody>
-            </table>
-        </main>
+    <!-- 오른쪽 상세 -->
+    <main class="main-content" id="mainContent">
+        <div class="details-card" id="detailsCard">
+            <span class="label">Education Course</span>
+            <h2 class="val-title" id="det-title">강의를 선택해주세요</h2>
+            
+            <div class="info-grid">
+                <div class="info-box">
+                    <h4>교육기간</h4>
+                    <p id="det-period">-</p>
+                </div>
+                <div class="info-box">
+                    <h4>강의실</h4>
+                    <p id="det-room">-</p>
+                </div>
+            </div>
 
-        <footer>
-            본 화면은 실시간 교육 일정에 따라 자동으로 업데이트됩니다.
-        </footer>
-    </div>
+            <div class="direction-area">
+                <div class="arrow" id="det-arrow">→</div>
+                <p style="font-weight: 700; color: #555; margin-top: 10px;">이동 방향</p>
+            </div>
+        </div>
+    </main>
+</div>
 
-    <script>
-        // 구글 시트 웹 게시(CSV) URL을 여기에 붙여넣으세요
-        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv';
+<script>
+    // 1. 구글 시트 CSV URL을 여기에 입력하세요
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv';
 
-        // 현재 시간 설정 (요청하신 기준 시간: 2026-06-15 14:39)
-        const TODAY = new Date('2026-06-15');
+    let courses = [];
 
-        async function fetchSheetData() {
-            try {
-                const response = await fetch(GOOGLE_SHEET_CSV_URL);
-                const data = await response.text();
-                const rows = data.split('\n').slice(1); // 헤더 제외
+    // 방향 텍스트를 화살표 아이콘으로 변환
+    const arrowMap = {
+        'left': '←',
+        'right': '→',
+        'up': '↑',
+        'straight': '↑',
+        'down': '↓'
+    };
 
-                const listContainer = document.getElementById('course-list');
-                listContainer.innerHTML = '';
+    // 데이터 가져오기
+    async function fetchSheetData() {
+        try {
+            const response = await fetch(SHEET_URL);
+            const data = await response.text();
+            
+            // CSV 파싱
+            const rows = data.split('\n').slice(1); // 헤더 제외
+            courses = rows.map(row => {
+                const cols = row.split(',');
+                return {
+                    title: cols[0],
+                    period: cols[1],
+                    room: cols[2],
+                    direction: cols[3]?.trim().toLowerCase()
+                };
+            }).filter(item => item.title); // 빈 행 제거
 
-                rows.forEach(row => {
-                    const columns = row.split(',');
-                    if(columns.length < 5) return;
-
-                    const [title, start, end, room, direction] = columns.map(item => item.trim());
-
-                    // 날짜 필터링 (현재 날짜가 시작일과 종료일 사이인 경우만 표시)
-                    const startDate = new Date(start);
-                    const endDate = new Date(end);
-
-                    if (TODAY >= startDate && TODAY <= endDate) {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td class="course-name">${title}</td>
-                            <td class="course-date">${start} ~ ${end}</td>
-                            <td class="room-number">${room}호</td>
-                            <td class="direction"><span class="arrow">${getArrow(direction)}</span></td>
-                        `;
-                        listContainer.appendChild(tr);
-                    }
-                });
-            } catch (error) {
-                console.error('데이터를 불러오는데 실패했습니다.', error);
-            }
+            renderList();
+            if(courses.length > 0) showDetails(0); // 첫 번째 항목 자동 선택
+        } catch (error) {
+            console.error('데이터 로드 실패:', error);
+            document.getElementById('courseList').innerHTML = '<div style="padding:40px;">데이터를 불러올 수 없습니다.</div>';
         }
+    }
 
-        // 방향 텍스트를 화살표 아이콘으로 변환
-        function getArrow(dir) {
-            if (dir.includes('왼쪽')) return '←';
-            if (dir.includes('오른쪽')) return '→';
-            if (dir.includes('위')) return '↑';
-            if (dir.includes('아래')) return '↓';
-            if (dir.includes('11시')) return '↖';
-            if (dir.includes('1시')) return '↗';
-            return '→'; // 기본값
-        }
+    // 왼쪽 리스트 렌더링
+    function renderList() {
+        const listEl = document.getElementById('courseList');
+        listEl.innerHTML = courses.map((course, index) => `
+            <div class="course-item" onclick="showDetails(${index})" id="item-${index}">
+                <h3>${course.title}</h3>
+                <p>${course.room}</p>
+            </div>
+        `).join('');
+    }
 
-        // 시계 업데이트
-        function updateClock() {
-            const now = new Date(); // 실제 구동 시에는 현재 시간을 사용
-            // 여기서는 요청하신 기준 시간을 출력하도록 고정하거나 조정 가능
-            document.getElementById('clock').innerText = `2026-06-15 14:39`;
-        }
+    // 상세 정보 표시
+    function showDetails(index) {
+        const data = courses[index];
+        
+        // 액티브 클래스 변경
+        document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`item-${index}`).classList.add('active');
 
-        // 초기 실행 및 주기적 업데이트 (5분마다)
-        fetchSheetData();
-        setInterval(fetchSheetData, 300000); 
-        updateClock();
-    </script>
+        // 내용 변경 (애니메이션 효과)
+        const card = document.getElementById('detailsCard');
+        card.classList.remove('animate');
+        void card.offsetWidth; // 리플로우 강제 발생
+        card.classList.add('animate');
+
+        document.getElementById('det-title').innerText = data.title;
+        document.getElementById('det-period').innerText = data.period;
+        document.getElementById('det-room').innerText = data.room;
+        document.getElementById('det-arrow').innerText = arrowMap[data.direction] || '→';
+    }
+
+    // 초기 실행 및 1분마다 새로고침 (실시간 반영)
+    fetchSheetData();
+    setInterval(fetchSheetData, 60000); 
+
+</script>
+
 </body>
 </html>
