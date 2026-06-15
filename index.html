@@ -3,175 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>강의실 안내 대시보드</title>
+    <title>롯데지알에스 아카데미 안내</title>
+    <!-- Pretendard 폰트 로드 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
         :root {
             --lotte-red: #E60012;
-            --bg-gray: #F1F1F1;
-            --text-dark: #333;
-            --border-color: #DDD;
+            --bg-light: #F8F9FA;
+            --text-main: #1A1A1A;
+            --text-sub: #666666;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
 
         body {
             background-color: #222;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             overflow: hidden;
         }
 
-        /* 16:9 컨테이너 */
+        /* 전체 컨테이너: 16:9 비율 유지 */
         #dashboard {
             width: 100vw;
-            height: 56.25vw;
+            height: 56.25vw; /* 16:9 비율 */
             max-height: 100vh;
             max-width: 177.78vh;
             background-color: white;
             display: flex;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 0 100px rgba(0,0,0,0.5);
+            position: relative;
         }
 
-        /* 왼쪽 사이드바 (로고 및 안내) */
+        /* --- 왼쪽 사이드바 --- */
         .sidebar {
-            width: 25%;
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
+            width: 28%; /* 폭을 살짝 넓힘 */
             background-color: white;
-        }
-
-        .header {
-            padding: 40px;
-            border-bottom: 1px solid #eee;
+            border-right: 1px solid #EEE;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            padding: 50px 40px;
         }
 
-        /* 로고 사이즈 조절 */
+        .logo-area {
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
         .logo-img {
-            width: 100%;
-            max-width: 250px;
-            height: auto;
-            object-fit: contain;
+            height: 30px; /* 로고 크기 최적화 */
+            width: auto;
         }
 
-        .guide-box {
-            padding: 40px 30px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
+        /* 시계 영역: 깔끔하고 모던하게 */
+        .clock-area {
+            margin-bottom: 50px;
         }
 
-        .guide-title {
-            font-size: 1.5rem;
+        #current-date {
+            font-size: 1.4rem;
+            color: var(--text-sub);
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        #current-time {
+            font-size: 4.5rem;
             font-weight: 800;
-            color: var(--lotte-red);
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .guide-text {
-            font-size: 1rem;
-            color: #666;
-            line-height: 1.6;
-            word-break: keep-all;
-        }
-
-        /* 오른쪽 메인 영역 (그리드 레이아웃) */
-        .main-content {
-            width: 75%;
-            padding: 30px;
-            background-color: var(--bg-gray);
-            display: grid;
-            gap: 25px;
-            /* 기본 2열 구성 */
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-        }
-
-        /* 데이터 개수에 따른 그리드 변형 */
-        .count-1 { grid-template-columns: 1fr; grid-template-rows: 1fr; }
-        .count-2 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr; }
-        .count-3 .course-card:last-child { grid-column: span 2; } /* 3개일 때 마지막 카드가 하단 전체 차지 */
-
-        /* 교육 과정 카드 스타일 */
-        .course-card {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border-top: 8px solid var(--lotte-red);
-            transition: transform 0.3s ease;
-            animation: fadeIn 0.6s ease-out forwards;
-        }
-
-        .card-top .label {
-            color: var(--lotte-red);
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .card-top h2 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            line-height: 1.2;
-            word-break: keep-all;
-        }
-
-        .card-info {
-            margin-top: 20px;
-            display: flex;
-            gap: 30px;
-        }
-
-        .info-item h4 { font-size: 0.9rem; color: #888; margin-bottom: 5px; }
-        .info-item p { font-size: 1.3rem; font-weight: 700; color: #333; }
-
-        .card-bottom {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px dashed #DDD;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .arrow {
-            font-size: 5rem;
-            color: var(--lotte-red);
-            font-weight: bold;
+            color: var(--text-main);
+            letter-spacing: -2px;
             line-height: 1;
         }
 
-        .room-tag {
-            background-color: var(--lotte-red);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.2rem;
+        /* 안내 문구 영역 */
+        .guide-area {
+            flex: 1;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+        .guide-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--lotte-red);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .guide-title::after {
+            content: "";
+            flex: 1;
+            height: 2px;
+            background: #EEE;
+        }
+
+        .guide-text {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: #444;
+            word-break: keep-all;
+        }
+
+        /* 공지사항/WIFI (하단 고정) */
+        .notice-area {
+            background-color: #F9F9F9;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--lotte-red);
+        }
+
+        .notice-item { margin-bottom: 15px; }
+        .notice-item:last-child { margin-bottom: 0; }
+
+        .notice-label {
+            font-size: 0.85rem;
+            color: var(--lotte-red);
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .notice-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        /* --- 오른쪽 메인 콘텐츠 --- */
+        .main-content {
+            width: 72%;
+            padding: 50px;
+            background-color: var(--bg-light);
+            display: grid;
+            gap: 30px;
+        }
+
+        /* 카드 개수별 레이아웃 정의 */
+        .count-1 { grid-template-columns: 1fr; }
+        .count-2 { grid-template-columns: 1fr 1fr; }
+        .count-3, .count-4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+        .count-3 .course-card:last-child { grid-column: span 2; }
+
+        .course-card {
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card-top .period {
+            font-size: 1.25rem;
+            color: var(--text-sub);
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card-top .title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.3;
+            word-break: keep-all;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 20px;
+        }
+
+        .room-info {
+            background: #F1F1F1;
+            padding: 15px 30px;
+            border-radius: 15px;
+        }
+
+        .room-info span {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--lotte-red);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .room-info p {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #222;
+        }
+
+        .direction-arrow {
+            font-size: 7rem;
+            font-weight: 900;
+            color: var(--lotte-red);
+            line-height: 0.7;
+        }
+
+        /* 개수별 크기 미세 조정 */
+        .count-1 .title { font-size: 5.5rem; }
+        .count-1 .direction-arrow { font-size: 15rem; }
+        .count-1 .room-info p { font-size: 4rem; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 텍스트가 너무 많을 때 스케일 조정 */
-        .count-1 .card-top h2 { font-size: 4rem; }
-        .count-1 .arrow { font-size: 10rem; }
+        .course-card { animation: fadeInUp 0.6s ease-out forwards; }
     </style>
 </head>
 <body>
@@ -179,88 +229,118 @@
 <div id="dashboard">
     <!-- 왼쪽 사이드바 -->
     <aside class="sidebar">
-        <div class="header">
-            <img src="logo.png" alt="LOTTE" class="logo-img">
+        <div class="logo-area">
+            <!-- logo.png 파일이 같은 경로에 있어야 합니다 -->
+            <img src="logo.png" alt="LOTTE GRS" class="logo-img">
         </div>
-        <div class="guide-box">
-            <div class="guide-title">오늘의 교육 과정</div>
-            <div class="guide-text">
-                롯데 아카데미를 방문해주셔서 감사합니다.<br>
-                우측 영역에서 과정명과 강의실 위치를 확인해 주세요.
+
+        <div class="clock-area">
+            <div id="current-date">2026. 06. 15 (월)</div>
+            <div id="current-time">15:49</div>
+        </div>
+
+        <div class="guide-area">
+            <div class="guide-title">강의실 안내</div>
+            <p class="guide-text">
+                롯데지알에스 아카데미에 오신 것을 환영합니다.<br>
+                오늘 진행되는 교육 과정과 강의실 위치를 확인해 주시기 바랍니다.
+            </p>
+        </div>
+
+        <div class="notice-area">
+            <div class="notice-item">
+                <span class="notice-label">Wi-Fi</span>
+                <p class="notice-value">ID : GRS_Academy_EXT<br>PW : grsacademy1!</p>
+            </div>
+            <div class="notice-item">
+                <span class="notice-label">Information</span>
+                <p class="notice-value">대표 번호 : 02-709-6920</p>
             </div>
         </div>
     </aside>
 
-    <!-- 오른쪽 과정 리스트 영역 -->
+    <!-- 오른쪽 메인 리스트 -->
     <main class="main-content" id="courseContainer">
-        <!-- JS로 카드가 생성됩니다 -->
+        <!-- 데이터에 따라 카드가 동적으로 생성됩니다 -->
     </main>
 </div>
 
 <script>
-    // 1. 구글 시트 CSV URL 입력
+    // 1. 구글 시트 CSV URL (본인의 시트로 교체하세요)
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv';
 
     const arrowMap = { 'left': '←', 'right': '→', 'up': '↑', 'straight': '↑', 'down': '↓' };
 
+    // 시계 기능
+    function updateClock() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        const week = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+
+        document.getElementById('current-date').innerText = `${y}. ${m}. ${d} (${week})`;
+        document.getElementById('current-time').innerText = `${hh}:${mm}`;
+    }
+
+    // 데이터 패치
     async function fetchSheetData() {
         try {
             const response = await fetch(SHEET_URL);
             const data = await response.text();
             const rows = data.split('\n').slice(1);
             
-            // 최대 4개까지만 가져오기
             const courses = rows.map(row => {
                 const cols = row.split(',');
                 return {
-                    title: cols[0],
-                    period: cols[1],
-                    room: cols[2],
+                    title: cols[0]?.trim(),
+                    period: cols[1]?.trim(),
+                    room: cols[2]?.trim(),
                     direction: cols[3]?.trim().toLowerCase()
                 };
             }).filter(item => item.title).slice(0, 4);
 
             renderDashboard(courses);
         } catch (error) {
-            console.error('데이터 로드 실패:', error);
-            document.getElementById('courseContainer').innerHTML = '데이터를 불러오는 중 오류가 발생했습니다.';
+            console.error('데이터 로드 오류:', error);
+            // 테스트용 가상 데이터 (데이터 로드 실패 시 확인용)
+            // renderDashboard([{title: "테스트 교육 과정", period: "09:00~18:00", room: "301호", direction: "right"}]);
         }
     }
 
     function renderDashboard(courses) {
         const container = document.getElementById('courseContainer');
-        
-        // 개수에 따른 클래스 부여 (레이아웃 조절)
         container.className = `main-content count-${courses.length}`;
         
         if (courses.length === 0) {
-            container.innerHTML = '<div style="grid-column: span 2; text-align:center; font-size:2rem; color:#999; align-self:center;">진행 중인 교육 과정이 없습니다.</div>';
+            container.innerHTML = `<div style="grid-column: span 2; text-align:center; font-size:2rem; color:#999; align-self:center;">현재 진행 중인 교육 과정이 없습니다.</div>`;
             return;
         }
 
         container.innerHTML = courses.map((course, index) => `
             <div class="course-card" style="animation-delay: ${index * 0.1}s">
                 <div class="card-top">
-                    <span class="label">EDUCATION COURSE</span>
-                    <h2>${course.title}</h2>
-                    <div class="card-info">
-                        <div class="info-item">
-                            <h4>교육 기간</h4>
-                            <p>${course.period}</p>
-                        </div>
-                    </div>
+                    <span class="period">${course.period}</span>
+                    <h2 class="title">${course.title}</h2>
                 </div>
                 <div class="card-bottom">
-                    <div class="room-tag">${course.room}</div>
-                    <div class="arrow">${arrowMap[course.direction] || '→'}</div>
+                    <div class="room-info">
+                        <span>LECTURE ROOM</span>
+                        <p>${course.room}</p>
+                    </div>
+                    <div class="direction-arrow">${arrowMap[course.direction] || '→'}</div>
                 </div>
             </div>
         `).join('');
     }
 
-    // 초기 실행 및 1분마다 업데이트
+    // 초기 실행 및 인터벌
+    updateClock();
+    setInterval(updateClock, 1000);
     fetchSheetData();
-    setInterval(fetchSheetData, 60000);
+    setInterval(fetchSheetData, 60000); // 1분마다 갱신
 </script>
 
 </body>
