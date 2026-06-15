@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>롯데지알에스 아카데미 안내</title>
-    <!-- Pretendard 폰트 로드 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
         :root {
@@ -161,21 +160,34 @@
             animation: fadeInUp 0.6s ease-out forwards;
         }
 
-        /* [수정 부분] 상단 텍스트 정렬 */
         .card-top .title {
             font-size: 3rem;
             font-weight: 800;
             color: var(--text-main);
             line-height: 1.2;
             word-break: keep-all;
-            margin-bottom: 12px; /* 제목 아래에 여백 추가 */
+            margin-bottom: 25px;
         }
 
-        .card-top .period {
+        .card-top .info-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-top .info-row {
             font-size: 1.3rem;
             color: var(--text-sub);
             font-weight: 500;
-            display: block;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-top .info-label {
+            color: var(--text-main);
+            font-weight: 700;
+            min-width: 90px;
+            margin-right: 10px;
         }
 
         .card-bottom {
@@ -205,17 +217,20 @@
             color: #222;
         }
 
+        /* [수정 부분] SVG 아이콘이 중앙에 깔끔하게 배치되도록 Flex 적용 */
         .direction-arrow {
-            font-size: 7rem;
-            font-weight: 900;
+            font-size: 6.5rem; /* 아이콘 크기에 맞춰 폰트 사이즈 미세 조정 */
             color: var(--lotte-red);
-            line-height: 0.7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* 개수별 크기 미세 조정 */
         .count-1 .title { font-size: 5.5rem; }
-        .count-1 .period { font-size: 2rem; }
-        .count-1 .direction-arrow { font-size: 15rem; }
+        .count-1 .info-row { font-size: 2rem; }
+        .count-1 .info-label { min-width: 140px; margin-right: 15px; }
+        .count-1 .direction-arrow { font-size: 13rem; }
         .count-1 .room-info p { font-size: 4rem; }
 
         @keyframes fadeInUp {
@@ -258,13 +273,22 @@
     </aside>
 
     <main class="main-content" id="courseContainer">
-        <!-- JS에서 카드가 생성됩니다 -->
-    </main>
+        </main>
 </div>
 
 <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv';
-    const arrowMap = { 'left': '←', 'right': '→', 'up': '↑', 'straight': '↑', 'down': '↓' };
+    
+    // [수정 부분] 텍스트 화살표 대신 깔끔한 고해상도 SVG 아이콘 코드를 생성하는 함수 적용
+    const createArrow = (path) => `<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="${path}"/></svg>`;
+    
+    const arrowMap = {
+        'left': createArrow('M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z'),
+        'right': createArrow('M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z'),
+        'up': createArrow('M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z'),
+        'straight': createArrow('M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z'),
+        'down': createArrow('M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z')
+    };
 
     function updateClock() {
         const now = new Date();
@@ -291,15 +315,14 @@
                     title: cols[0]?.trim(),
                     period: cols[1]?.trim(),
                     room: cols[2]?.trim(),
-                    direction: cols[3]?.trim().toLowerCase()
+                    direction: cols[3]?.trim().toLowerCase(),
+                    time: cols[4]?.trim()
                 };
             }).filter(item => item.title).slice(0, 4);
 
             renderDashboard(courses);
         } catch (error) {
             console.error('데이터 로드 오류:', error);
-            // 테스트용 데이터 (시트 연결 전 확인용)
-            // renderDashboard([{title: "관리자 리더십 향상 과정", period: "09:00 ~ 17:00", room: "제 1강의실", direction: "right"}]);
         }
     }
 
@@ -312,19 +335,27 @@
             return;
         }
 
-        // [수정 부분] title이 위로, period가 아래로 가도록 순서 변경
         container.innerHTML = courses.map((course, index) => `
             <div class="course-card" style="animation-delay: ${index * 0.1}s">
                 <div class="card-top">
                     <h2 class="title">${course.title}</h2>
-                    <span class="period">${course.period}</span>
+                    <div class="info-group">
+                        <div class="info-row">
+                            <span class="info-label">교육 일정 :</span>
+                            <span>${course.period || '-'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">교육 시간 :</span>
+                            <span>${course.time || '-'}</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-bottom">
                     <div class="room-info">
                         <span>LECTURE ROOM</span>
                         <p>${course.room}</p>
                     </div>
-                    <div class="direction-arrow">${arrowMap[course.direction] || '→'}</div>
+                    <div class="direction-arrow">${arrowMap[course.direction] || arrowMap['right']}</div>
                 </div>
             </div>
         `).join('');
