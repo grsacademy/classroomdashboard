@@ -16,7 +16,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
 
         body {
-            background-color: #333; /* 배경 어둡게 */
+            background-color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,9 +27,9 @@
         /* 16:9 컨테이너 */
         #dashboard {
             width: 100vw;
-            height: 56.25vw; /* 16:9 ratio */
+            height: 56.25vw;
             max-height: 100vh;
-            max-width: 177.78vh; /* 16:9 ratio */
+            max-width: 177.78vh;
             background-color: white;
             display: flex;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
@@ -44,16 +44,21 @@
             background-color: white;
         }
 
+        /* 로고 헤더 영역 */
         .header {
-            padding: 40px;
+            padding: 40px; /* 상하좌우 여백 */
             border-bottom: 4px solid var(--lotte-red);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* 왼쪽 정렬 (가운데는 center) */
         }
 
-        .header h1 {
-            font-size: 1.8rem;
-            color: var(--lotte-red);
-            font-weight: 800;
-            letter-spacing: -1px;
+        /* ★ 로고 이미지 사이즈 조절 CSS ★ */
+        .logo-img {
+            width: 250px;        /* 로고 가로 너비 (원하는 크기로 수정하세요) */
+            height: auto;        /* 세로 비율 유지 */
+            max-height: 80px;    /* 최대 높이 제한 (헤더를 넘어가지 않게) */
+            object-fit: contain;
         }
 
         .course-list {
@@ -108,7 +113,6 @@
         .info-box h4 { font-size: 1rem; color: #777; margin-bottom: 10px; }
         .info-box p { font-size: 1.8rem; font-weight: 700; }
 
-        /* 방향 아이콘 (화살표) */
         .direction-area {
             text-align: center;
             margin-top: 20px;
@@ -120,10 +124,8 @@
             font-size: 8rem;
             color: var(--lotte-red);
             display: inline-block;
-            transition: transform 0.5s;
         }
 
-        /* 애니메이션 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -137,11 +139,12 @@
 <div id="dashboard">
     <!-- 왼쪽 목록 -->
     <aside class="sidebar">
+        <!-- 로고 영역 -->
         <div class="header">
-            <h1>LOTTE<br>ACADEMY</h1>
+            <!-- 롯데 로고 이미지를 넣으세요. src에 이미지 경로 입력 -->
+            <img src="logo.png" alt="LOTTE Logo" class="logo-img">
         </div>
         <div class="course-list" id="courseList">
-            <!-- 데이터가 여기 로드됩니다 -->
             <div style="padding: 40px;">데이터를 불러오는 중...</div>
         </div>
     </aside>
@@ -172,28 +175,16 @@
 </div>
 
 <script>
-    // 1. 구글 시트 CSV URL을 여기에 입력하세요
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThSEdRPQ80O2WMC8E-ceES--tvUAIVPlIR4_gmRq2Uoix8CxKqU3WQSkh5O3bKPI4tU56jqMXPKQcn/pub?output=csv';
 
     let courses = [];
+    const arrowMap = { 'left': '←', 'right': '→', 'up': '↑', 'straight': '↑', 'down': '↓' };
 
-    // 방향 텍스트를 화살표 아이콘으로 변환
-    const arrowMap = {
-        'left': '←',
-        'right': '→',
-        'up': '↑',
-        'straight': '↑',
-        'down': '↓'
-    };
-
-    // 데이터 가져오기
     async function fetchSheetData() {
         try {
             const response = await fetch(SHEET_URL);
             const data = await response.text();
-            
-            // CSV 파싱
-            const rows = data.split('\n').slice(1); // 헤더 제외
+            const rows = data.split('\n').slice(1);
             courses = rows.map(row => {
                 const cols = row.split(',');
                 return {
@@ -202,17 +193,16 @@
                     room: cols[2],
                     direction: cols[3]?.trim().toLowerCase()
                 };
-            }).filter(item => item.title); // 빈 행 제거
+            }).filter(item => item.title);
 
             renderList();
-            if(courses.length > 0) showDetails(0); // 첫 번째 항목 자동 선택
+            if(courses.length > 0) showDetails(0);
         } catch (error) {
             console.error('데이터 로드 실패:', error);
-            document.getElementById('courseList').innerHTML = '<div style="padding:40px;">데이터를 불러올 수 없습니다.</div>';
+            document.getElementById('courseList').innerHTML = '<div style="padding:40px;">데이터 로드 실패</div>';
         }
     }
 
-    // 왼쪽 리스트 렌더링
     function renderList() {
         const listEl = document.getElementById('courseList');
         listEl.innerHTML = courses.map((course, index) => `
@@ -223,18 +213,15 @@
         `).join('');
     }
 
-    // 상세 정보 표시
     function showDetails(index) {
         const data = courses[index];
-        
-        // 액티브 클래스 변경
         document.querySelectorAll('.course-item').forEach(el => el.classList.remove('active'));
-        document.getElementById(`item-${index}`).classList.add('active');
+        const activeItem = document.getElementById(`item-${index}`);
+        if(activeItem) activeItem.classList.add('active');
 
-        // 내용 변경 (애니메이션 효과)
         const card = document.getElementById('detailsCard');
         card.classList.remove('animate');
-        void card.offsetWidth; // 리플로우 강제 발생
+        void card.offsetWidth;
         card.classList.add('animate');
 
         document.getElementById('det-title').innerText = data.title;
@@ -243,10 +230,8 @@
         document.getElementById('det-arrow').innerText = arrowMap[data.direction] || '→';
     }
 
-    // 초기 실행 및 1분마다 새로고침 (실시간 반영)
     fetchSheetData();
     setInterval(fetchSheetData, 60000); 
-
 </script>
 
 </body>
