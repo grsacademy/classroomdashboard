@@ -171,45 +171,45 @@
 
         /* 1개일 때 */
         .count-1 .course-card { height: 100%; }
-        .count-1 .title { font-size: 3.5rem !important; }
+        .count-1 .title { font-size: 4.2rem !important; }
         .count-1 .info-row { font-size: 1.8rem !important; }
         .count-1 .room-info { min-height: 160px !important; }
         .count-1 .room-info p { font-size: 3.5rem !important; }
-        .count-1 .direction-arrow { font-size: 8rem !important; }
+        .count-1 .direction-arrow { font-size: 10rem !important; }
 
         /* 2개일 때 */
         .count-2 .course-card { height: 48%; }
-        .count-2 .title { font-size: 2.4rem; }
+        .count-2 .title { font-size: 2.8rem; }
         .count-2 .info-row { font-size: 1.3rem; }
 
         /* 3개일 때 */
         .count-3 .course-card { height: 31%; }
-        .count-3 .title { font-size: 2.0rem; }
+        .count-3 .title { font-size: 2.4rem; }
         .count-3 .info-row { font-size: 1.15rem; }
 
         /* 4개일 때 */
         .count-4 .course-card { height: 23%; }
-        .count-4 .title { font-size: 1.6rem; }
+        .count-4 .title { font-size: 2.0rem; }
         .count-4 .info-row { font-size: 0.95rem; }
         .count-4 .card-bottom { margin-top: 10px !important; }
         .count-4 .room-info { min-height: 90px !important; padding: 10px 20px !important; }
         .count-4 .room-info p { font-size: 1.6rem !important; }
-        .count-4 .direction-arrow { font-size: 4rem !important; }
+        .count-4 .direction-arrow { font-size: 5rem !important; }
 
         /* 5개일 때 */
         .count-5 .course-card { height: 18%; }
-        .count-5 .title { font-size: 1.4rem; }
+        .count-5 .title { font-size: 1.7rem; }
         .count-5 .info-row { font-size: 0.85rem; }
         .count-5 .card-bottom { margin-top: 5px !important; }
         .count-5 .room-info { min-height: 75px !important; padding: 5px 15px !important; }
         .count-5 .room-info p { font-size: 1.4rem !important; }
-        .count-5 .direction-arrow { font-size: 3rem !important; }
+        .count-5 .direction-arrow { font-size: 4rem !important; }
 
         .card-top { flex: 1; padding: 20px 0; }
 
         .card-top .title {
-            font-size: 2.2rem; 
-            font-weight: 800;
+            font-size: 2.5rem; 
+            font-weight: 900;
             color: var(--text-main);
             line-height: 1.3;
             word-break: keep-all;
@@ -281,8 +281,8 @@
 
         .direction-arrow {
             flex-shrink: 0;
-            width: 70px; 
-            font-size: 5rem;
+            width: 100px; 
+            font-size: 6rem;
             color: var(--lotte-red);
             display: flex;
             align-items: center;
@@ -336,15 +336,15 @@
     // ★ 구글 시트 ID 설정 (앱/로비와 동일한 통합 시트 ID)
     const SHEET_ID = '1T6gk3ediGcWimaS5EXVVxHnoqrW2aOdZJ5fGZVYVgLg';
     
-    // SVG 아이콘 매핑
-    const createArrow = (path) => `<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="${path}"/></svg>`;
+    // SVG 아이콘 매핑 (선 굵기와 길이를 조절하기 위해 stroke 방식으로 변경)
+    const createArrow = (path) => `<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="${path}"/></svg>`;
     
     const arrowMap = {
-        'left': createArrow('M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z'),
-        'right': createArrow('M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z'),
-        'up': createArrow('M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z'),
-        'straight': createArrow('M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z'),
-        'down': createArrow('M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z')
+        'left': createArrow('M22 12H2M2 12L7 17M2 12L7 7'),
+        'right': createArrow('M2 12H22M22 12L17 17M22 12L17 7'),
+        'up': createArrow('M12 22V2M12 2L7 7M12 2L17 7'),
+        'straight': createArrow('M12 22V2M12 2L7 7M12 2L17 7'),
+        'down': createArrow('M12 2V22M12 22L7 17M12 22L17 17')
     };
 
     function updateClock() {
@@ -438,7 +438,7 @@
             const data = JSON.parse(jsonStr);
             const rows = data.table.rows;
 
-            // 기준일: 오늘 날짜 (2026-06-27)
+            // 기준일: 오늘 날짜
             const now = new Date();
             const y = now.getFullYear();
             const m = String(now.getMonth() + 1).padStart(2, '0');
